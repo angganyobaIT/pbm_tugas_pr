@@ -13,10 +13,13 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() =>
       _HomeScreenState();
 }
+
 class _HomeScreenState
     extends State<HomeScreen> {
+
   List<ProductModel> products = [];
   bool isLoading = true;
+
   void getProducts() async {
     products.clear();
     products =
@@ -25,6 +28,7 @@ class _HomeScreenState
       isLoading = false;
     });
   }
+
   void handleDelete(int id) async {
     bool success =
         await ProductService().deleteProduct(id);
@@ -37,9 +41,7 @@ class _HomeScreenState
               Text("Produk berhasil dihapus"),
         ),
       );
-    } 
-    else 
-    {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -48,6 +50,7 @@ class _HomeScreenState
       );
     }
   }
+
   void handleLogout() async {
     await AuthService().logout();
     if (!mounted) return;
@@ -59,6 +62,102 @@ class _HomeScreenState
       ),
     );
   }
+
+  void showDeleteConfirmation(int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(25),
+          ),
+          title: const Text(
+            "Hapus Produk",
+          ),
+          content: const Text(
+            "Yakin ingin menghapus produk ini?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Batal",
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                handleDelete(id);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                "Hapus",
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showLogoutConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(25),
+          ),
+          title: const Text(
+            "Logout",
+          ),
+          content: const Text(
+            "Yakin ingin logout?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Batal",
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                handleLogout();
+              },
+
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    const Color(0xff111827),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                "Logout",
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +166,8 @@ class _HomeScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:const Color(0xffeef2ff),
+      backgroundColor:
+          const Color(0xffeef2ff),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -97,7 +197,8 @@ class _HomeScreenState
                 ],
               ),
               child: IconButton(
-                onPressed: handleLogout,
+                onPressed:
+                    showLogoutConfirmation,
                 icon: const Icon(
                   Icons.logout,
                   color: Color(0xff0f172a),
@@ -113,7 +214,8 @@ class _HomeScreenState
         children: [
           FloatingActionButton(
             heroTag: "add",
-            backgroundColor:const Color(0xff111827),
+            backgroundColor:
+                const Color(0xff111827),
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -129,11 +231,11 @@ class _HomeScreenState
               color: Colors.white,
             ),
           ),
-
           const SizedBox(height: 15),
           FloatingActionButton(
             heroTag: "submit",
-            backgroundColor:const Color(0xff8b5cf6),
+            backgroundColor:
+                const Color(0xff8b5cf6),
             onPressed: () {
               Navigator.push(
                 context,
@@ -150,6 +252,7 @@ class _HomeScreenState
           ),
         ],
       ),
+
       body:
           isLoading
               ? const Center(
@@ -178,10 +281,9 @@ class _HomeScreenState
                                   Color(0xff0f172a),
                             ),
                           ),
-
                           const SizedBox(height: 8),
                           const Text(
-                            "Kelola draft produk dengan mudah",
+                            "Kelola daftar produk",
                             style: TextStyle(
                               fontSize: 15,
                               color:
@@ -212,6 +314,7 @@ class _HomeScreenState
                                         BorderRadius.circular(
                                       30,
                                     ),
+
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black
@@ -227,6 +330,7 @@ class _HomeScreenState
                                       ),
                                     ],
                                   ),
+
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment
@@ -253,6 +357,7 @@ class _HomeScreenState
                                               ),
                                             ),
                                           ),
+
                                           Container(
                                             decoration:
                                                 BoxDecoration(
@@ -268,10 +373,11 @@ class _HomeScreenState
                                             ),
                                             child: IconButton(
                                               onPressed: () {
-                                                handleDelete(
+                                                showDeleteConfirmation(
                                                   product.id,
                                                 );
                                               },
+
                                               icon: const Icon(
                                                 Icons.delete_outline,
                                                 color: Colors.red,
@@ -280,6 +386,8 @@ class _HomeScreenState
                                           ),
                                         ],
                                       ),
+
+
                                       const SizedBox(
                                         height: 18,
                                       ),
@@ -293,7 +401,13 @@ class _HomeScreenState
                                             BoxDecoration(
                                           gradient:
                                               const LinearGradient(
-                                            colors: [Color(0xff60a5fa,),Color(0xff8b5cf6,),
+                                            colors: [
+                                              Color(
+                                                0xff60a5fa,
+                                              ),
+                                              Color(
+                                                0xff8b5cf6,
+                                              ),
                                             ],
                                           ),
                                           borderRadius:

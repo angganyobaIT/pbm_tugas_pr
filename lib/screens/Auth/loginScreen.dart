@@ -4,51 +4,113 @@ import '../Homepage/homeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() =>
       _LoginScreenState();
 }
+
 class _LoginScreenState
     extends State<LoginScreen> {
+
   final TextEditingController usernameController =TextEditingController();
   final TextEditingController passwordController =TextEditingController();
-
   bool isLoading = false;
+
+  void showMessage({
+    required String title,
+    required String message,
+    required Color color,
+  }) {
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(25),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                color: color,
+              ),
+              const SizedBox(width: 10),
+              Text(title),
+            ],
+          ),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK",
+                style: TextStyle(
+                  color: color,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void handleLogin() async {
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Username dan password wajib diisi",
-          ),
-        ),
+      showMessage(
+        title: "Peringatan",
+        message:
+            "Username dan password wajib diisi.",
+        color: Colors.orange,
       );
       return;
     }
+
     setState(() {
       isLoading = true;
     });
+
     bool success = await AuthService().login(
       username: usernameController.text,
       password: passwordController.text,
     );
+
     setState(() {
       isLoading = false;
     });
+
     if (!mounted) return;
     if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              const HomeScreen(),
-        ),
+
+      showMessage(
+        title: "Berhasil",
+        message:
+            "Login berhasil",
+        color: Colors.green,
+      );
+      Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  const HomeScreen(),
+            ),
+          );
+        },
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Login gagal"),
-        ),
+      showMessage(
+        title: "Login Gagal",
+        message:
+            "Username atau password tidak valid.",
+        color: Colors.red,
       );
     }
   }
@@ -68,7 +130,8 @@ class _LoginScreenState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    const Color(0xffc4b5fd).withOpacity(0.35),
+                    const Color(0xffc4b5fd)
+                        .withOpacity(0.35),
               ),
             ),
           ),
@@ -81,15 +144,16 @@ class _LoginScreenState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    const Color(0xff93c5fd).withOpacity(0.30),
+                    const Color(0xff93c5fd)
+                        .withOpacity(0.30),
               ),
             ),
           ),
-
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
+                padding:
+                    const EdgeInsets.symmetric(
                   horizontal: 28,
                 ),
                 child: Column(
@@ -106,7 +170,6 @@ class _LoginScreenState
                         height: 1.1,
                       ),
                     ),
-
                     const SizedBox(height: 12),
                     const Text(
                       "Mulai login untuk melanjutkan",
@@ -118,53 +181,75 @@ class _LoginScreenState
                     ),
                     const SizedBox(height: 45),
                     Container(
-                      padding: const EdgeInsets.all(28),
+                      padding:
+                          const EdgeInsets.all(28),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.75),
+                        color:
+                            Colors.white.withOpacity(
+                          0.75,
+                        ),
                         borderRadius:
                             BorderRadius.circular(35),
                         boxShadow: [
                           BoxShadow(
                             color:
-                                Colors.black.withOpacity(0.08),
+                                Colors.black.withOpacity(
+                              0.08,
+                            ),
                             blurRadius: 30,
-                            offset: const Offset(0, 15),
+                            offset:
+                                const Offset(0, 15),
                           ),
                         ],
                       ),
                       child: Column(
                         children: [
                           TextField(
-                            controller: usernameController,
-                            decoration: InputDecoration(
+                            controller:
+                                usernameController,
+                            decoration:
+                                InputDecoration(
                               hintText: "Username",
                               filled: true,
                               fillColor:
-                                  const Color(0xfff8fafc),
-                              border: OutlineInputBorder(
+                                  const Color(
+                                0xfff8fafc,
+                              ),
+                              border:
+                                  OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.circular(20),
-                                borderSide: BorderSide.none,
+                                    BorderRadius.circular(
+                                  20,
+                                ),
+                                borderSide:
+                                    BorderSide.none,
                               ),
                             ),
                           ),
                           const SizedBox(height: 22),
                           TextField(
-                            controller: passwordController,
+                            controller:
+                                passwordController,
                             obscureText: true,
-                            decoration: InputDecoration(
+                            decoration:
+                                InputDecoration(
                               hintText: "Password",
                               filled: true,
                               fillColor:
-                                  const Color(0xfff8fafc),
-                              border: OutlineInputBorder(
+                                  const Color(
+                                0xfff8fafc,
+                              ),
+                              border:
+                                  OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.circular(20),
-                                borderSide: BorderSide.none,
+                                    BorderRadius.circular(
+                                  20,
+                                ),
+                                borderSide:
+                                    BorderSide.none,
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 35),
                           SizedBox(
                             width: double.infinity,
@@ -174,15 +259,21 @@ class _LoginScreenState
                                   isLoading
                                       ? null
                                       : handleLogin,
-                              style: ElevatedButton.styleFrom(
+                              style:
+                                  ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor:
-                                    const Color(0xff111827),
+                                    const Color(
+                                  0xff111827,
+                                ),
                                 foregroundColor:
                                     Colors.white,
-                                shape: RoundedRectangleBorder(
+                                shape:
+                                    RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.circular(22),
+                                      BorderRadius.circular(
+                                    22,
+                                  ),
                                 ),
                               ),
                               child:
@@ -193,7 +284,8 @@ class _LoginScreenState
                                           child:
                                               CircularProgressIndicator(
                                             strokeWidth: 3,
-                                            color: Colors.white,
+                                            color:
+                                                Colors.white,
                                           ),
                                         )
                                       : const Text(

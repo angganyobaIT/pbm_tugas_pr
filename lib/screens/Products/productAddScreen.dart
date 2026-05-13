@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../services/productService.dart';
-
 class ProductAddScreen extends StatefulWidget {
   const ProductAddScreen({super.key});
 
@@ -9,60 +8,118 @@ class ProductAddScreen extends StatefulWidget {
       _ProductAddScreenState();
 }
 
-class _ProductAddScreenState
-    extends State<ProductAddScreen> {
+class _ProductAddScreenState extends State<ProductAddScreen> {
   final TextEditingController nameController =TextEditingController();
-  final TextEditingController priceController =TextEditingController();
-  final TextEditingController descriptionController =TextEditingController();
-
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController descriptionController=TextEditingController();
   bool isLoading = false;
 
+  void showMessage({
+    required String title,
+    required String message,
+    required Color color,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(25),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                color: color,
+              ),
+              const SizedBox(width: 10),
+              Text(title),
+            ],
+          ),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK",
+                style: TextStyle(
+                  color: color,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
   void handleAddProduct() async {
+    if (nameController.text.isEmpty || priceController.text.isEmpty || descriptionController.text.isEmpty) {
+      showMessage(
+        title: "Peringatan",
+        message:
+            "Semua data wajib diisi.",
+        color: Colors.orange,
+      );
+      return;
+    }
 
+    if (int.tryParse(priceController.text) ==
+        null) {
+      showMessage(
+        title: "Format Harga Tidak Valid",
+        message:
+            "Harga produk harus berupa angka.",
+        color: Colors.red,
+      );
+      return;
+    }
     setState(() {
       isLoading = true;
     });
-
     bool success =
         await ProductService().addProduct(
       name: nameController.text,
-      price: int.parse(priceController.text),
-      description: descriptionController.text,
+      price: int.parse(
+        priceController.text,
+      ),
+      description:
+          descriptionController.text,
     );
-
     setState(() {
       isLoading = false;
     });
-
     if (!mounted) return;
-
     if (success) {
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text("Produk berhasil ditambahkan"),
-        ),
+      showMessage(
+        title: "Berhasil",
+        message:
+            "Produk berhasil ditambahkan.",
+        color: Colors.green,
       );
-
-      Navigator.pop(context);
-
+      Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          Navigator.pop(context);
+        },
+      );
     } else {
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text("Gagal menambahkan produk"),
-        ),
+      showMessage(
+        title: "Gagal",
+        message:
+            "Produk gagal ditambahkan.",
+        color: Colors.red,
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor:const Color(0xffeef2ff),
+      backgroundColor:
+          const Color(0xffeef2ff),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -73,7 +130,6 @@ class _ProductAddScreenState
             fontWeight: FontWeight.bold,
           ),
         ),
-
         iconTheme: const IconThemeData(
           color: Color(0xff0f172a),
         ),
@@ -89,11 +145,11 @@ class _ProductAddScreenState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    const Color(0xffc4b5fd).withOpacity(0.35),
+                    const Color(0xffc4b5fd)
+                        .withOpacity(0.35),
               ),
             ),
           ),
-
           Positioned(
             bottom: -120,
             right: -90,
@@ -103,7 +159,8 @@ class _ProductAddScreenState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    const Color(0xff93c5fd).withOpacity(0.30),
+                    const Color(0xff93c5fd)
+                        .withOpacity(0.30),
               ),
             ),
           ),
@@ -124,9 +181,10 @@ class _ProductAddScreenState
                       color: Color(0xff0f172a),
                     ),
                   ),
+
                   const SizedBox(height: 10),
                   const Text(
-                    "Waktunya tambahkan produk kamu.",
+                    "Tambahkan Produk Sekarang.",
                     style: TextStyle(
                       fontSize: 15,
                       color: Color(0xff64748b),
@@ -138,48 +196,73 @@ class _ProductAddScreenState
                   Container(
                     padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.75),
+                      color:
+                          Colors.white.withOpacity(
+                        0.75,
+                      ),
                       borderRadius:
                           BorderRadius.circular(35),
                       boxShadow: [
                         BoxShadow(
                           color:
-                              Colors.black.withOpacity(0.08),
+                              Colors.black.withOpacity(
+                            0.08,
+                          ),
                           blurRadius: 30,
-                          offset: const Offset(0, 15),
+                          offset:
+                              const Offset(0, 15),
                         ),
                       ],
                     ),
-
                     child: Column(
                       children: [
                         TextField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            hintText: "Nama Produk",
+                          controller:
+                              nameController,
+                          decoration:
+                              InputDecoration(
+                            hintText:
+                                "Nama Produk",
                             filled: true,
-                            fillColor:const Color(0xfff8fafc),
-                            border: OutlineInputBorder(
+                            fillColor:
+                                const Color(
+                              0xfff8fafc,
+                            ),
+                            border:
+                                OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.circular(20),
-                              borderSide: BorderSide.none,
+                                  BorderRadius.circular(
+                                20,
+                              ),
+                              borderSide:
+                                  BorderSide.none,
                             ),
                           ),
                         ),
 
                         const SizedBox(height: 22),
                         TextField(
-                          controller: priceController,
+                          controller:
+                              priceController,
                           keyboardType:
                               TextInputType.number,
-                          decoration: InputDecoration(
-                            hintText: "Harga Produk",
+                          decoration:
+                              InputDecoration(
+                            hintText:
+                                "Harga Produk",
                             filled: true,
-                            fillColor:const Color(0xfff8fafc),
-                            border: OutlineInputBorder(
+                            fillColor:
+                                const Color(
+                              0xfff8fafc,
+                            ),
+                            border:
+                                OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.circular(20),
-                              borderSide: BorderSide.none,
+                                  BorderRadius.circular(
+                                20,
+                              ),
+                              borderSide:
+                                  BorderSide.none,
                             ),
                           ),
                         ),
@@ -189,16 +272,23 @@ class _ProductAddScreenState
                           controller:
                               descriptionController,
                           maxLines: 5,
-                          decoration: InputDecoration(
+                          decoration:
+                              InputDecoration(
                             hintText:
-                                "Deskripsi Produk",
+                                "Deskripsi Prduk",
                             filled: true,
                             fillColor:
-                                const Color(0xfff8fafc),
-                            border: OutlineInputBorder(
+                                const Color(
+                              0xfff8fafc,
+                            ),
+                            border:
+                                OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.circular(20),
-                              borderSide: BorderSide.none,
+                                  BorderRadius.circular(
+                                20,
+                              ),
+                              borderSide:
+                                  BorderSide.none,
                             ),
                           ),
                         ),
@@ -212,13 +302,17 @@ class _ProductAddScreenState
                                 isLoading
                                     ? null
                                     : handleAddProduct,
-                            style: ElevatedButton.styleFrom(
+                            style:
+                                ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor:
-                                  const Color(0xff111827),
+                                  const Color(
+                                0xff111827,
+                              ),
                               foregroundColor:
                                   Colors.white,
-                              shape: RoundedRectangleBorder(
+                              shape:
+                                  RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(
                                   22,
