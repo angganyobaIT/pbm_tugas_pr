@@ -2,9 +2,24 @@
 
 # Dokumentasi Tampilan
 
+<h3>Login Screen</h3>
+<img src="https://github.com/user-attachments/assets/adad12fa-7973-443e-adb8-167001ff4f53" width="250"/>
+
+<h3>Dashboard</h3>
+<img src="screenshots/dashboard.jpg" width="250">
+
+<h3>Tambah Produk</h3>
+<img src="screenshots/add_product.jpg" width="250">
+
+<h3>Submit Tugas</h3>
+<img src="screenshots/submit_task.jpg" width="250">
+
+
+# Dokumentasi Tampilan
+
 ## Login Screen
 
-<img width="1080" height="2340" alt="WhatsApp Image 2026-05-14 at 03 14 36" src="https://github.com/user-attachments/assets/262df601-4a9f-464b-9abb-ff345c114199" />
+
 
 ---
 
